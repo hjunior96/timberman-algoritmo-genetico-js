@@ -234,24 +234,25 @@ function renderGame() {
 	}
 	
 	// Evenements clavier et souris 
-	if (keyboardReleased(KEY_LEFT) && level != levelGameOver) {
+	/*if (keyboardReleased(KEY_LEFT) && level != levelGameOver) {
 		man.data = "left";
 		man.x = 263;
 		flipSprite(man, 1, 1);
 		man.action = true;		
-	}
+	}*/
 
-	if (keyboardReleased(KEY_RIGHT) && level != levelGameOver) {
+	/*if (keyboardReleased(KEY_RIGHT) && level != levelGameOver) {
 		man.data = "right";
 		man.x = 800;
 		flipSprite(man, -1, 1);
 		man.action = true;
-	}
+		sleep(2000);
+	}*/
 
-	if (keyboardReleased(KEY_ENTER) && level == levelGameOver) {
+	/*if (keyboardReleased(KEY_ENTER) && level == levelGameOver) {
 		restartGame();
 		level =levelLoad;
-	}
+	}*/
 	 
 	//acao();
 
@@ -267,11 +268,26 @@ function direita(){
 }
 
 
+function esquerda(){
+	man.data = "left";
+	man.x = 263;
+	flipSprite(man, 1, 1);
+	man.action = true;
+	acao();	
+}
+
+
 function jogar(){
-	setTimeout(function(){
-    		direita();
-	}, 500);
-	direita();
+    	setInterval(function(){
+		var random_boolean = Math.random() >= 0.5;
+		if(random_boolean == true){
+			direita();
+		}else{
+			esquerda();
+		}
+	}, 500)
+	
+	//setTimeout(function(){esquerda()}, 2000)
 }
 
 function acao(){

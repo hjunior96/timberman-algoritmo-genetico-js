@@ -339,3 +339,7 @@ function acao(){
 	}
 	requestAnimationFrame(renderGame);
 }
+
+function verificaProximoTronco(){
+	return trunk[1];
+}

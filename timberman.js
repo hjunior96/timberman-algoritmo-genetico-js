@@ -278,13 +278,22 @@ function esquerda(){
 
 
 function jogar(){
+		var boolean_controle = Math.random() >= 0.5;
     	setInterval(function(){
-		var random_boolean = Math.random() >= 0.5;
-		if(random_boolean == true){
-			direita();
+		//var random_boolean = Math.random() >= 0.5;
+		if(boolean_controle == true && verificaProximoTronco()=="branchright"){
+			boolean_controle = false
+			//direita();
+			//console.log(verificaProximoTronco());
 		}else{
-			esquerda();
+			if(boolean_controle == false && verificaProximoTronco()=="branchleft"){
+				boolean_controle = true;
+			}
 		}
+		if(boolean_controle == true)
+			direita();
+		else
+			esquerda();
 	}, 500)
 	
 	//setTimeout(function(){esquerda()}, 2000)
@@ -341,5 +350,5 @@ function acao(){
 }
 
 function verificaProximoTronco(){
-	return trunk[1];
+	return trunk[1].data;
 }

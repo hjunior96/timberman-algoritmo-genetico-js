@@ -121,7 +121,7 @@ var timecontainer	= loadSprite("assets/image/time-container.png", onReady);
 var timebar			= loadSprite("assets/image/time-bar.png", onReady);	
 
 // Load Sound
-var theme			= loadSound("assets/sound/theme.mp3");
+//var theme			= loadSound("assets/sound/theme.mp3");
 var cut 			= loadSound("assets/sound/cut.mp3");
 var death 			= loadSound("assets/sound/death.mp3");
 var menubar			= loadSound("assets/sound/menu.mp3");
@@ -220,7 +220,7 @@ function restartGame() {
 
 function gameOver() {
 	level = levelGameOver;
-	resumeSound(theme);
+	//resumeSound(theme);
 	playSound(death);
 
 	if (score > bestscore) {
@@ -341,24 +341,25 @@ function esquerda(){
 
 function jogar(jogador){
 		var boolean_controle = Math.random() >= 0.5;
-    	setInterval(function(){
-		//var random_boolean = Math.random() >= 0.5;
-		if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-			boolean_controle = false
-			//direita();
-			//console.log(verificaProximoTronco());
-		}else{
-			if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
-				boolean_controle = true;
+    	var jogando = setInterval(function(){
+			if(level==levelLoad) clearInterval(jogando);
+			//var random_boolean = Math.random() >= 0.5;
+			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
+				boolean_controle = false
+				//direita();
+				//console.log(verificaProximoTronco());
+			}else{
+				if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+					boolean_controle = true;
+				}
 			}
-		}
-		if(boolean_controle == true)
-			direita();
-		else
-			esquerda();
-		
-		acao(jogador);
-	}, 500)
+			if(boolean_controle == true)
+				direita();
+			else
+				esquerda();
+			
+			acao(jogador);
+		}, 500)
 	
 	//setTimeout(function(){esquerda()}, 2000)
 }
@@ -366,7 +367,7 @@ function jogar(jogador){
 function acao(jogador){
 	if (man.action == true) {
 		if (level == levelLoad) {
-			playSound(theme, true);
+			//playSound(theme, true);
 			level = levelPlay;
 		}
 
@@ -414,8 +415,8 @@ function acao(jogador){
 	requestAnimationFrame(renderGame);
 }
 
-function verificaProximoTronco(){
-	return trunk[1].data;
+function verificaProximoTronco(distancia){
+	return trunk[distancia].data;
 }
 
 //preenche os cromossomos iniciais
@@ -433,12 +434,14 @@ function preencheJogadores(){
 function iniciar(){
 	preencheJogadores();
 	crossover();
-	mutacao();
-	/*var i = 0;
-	for(i; i < 9; i++){
-		jogar(vetor[i]);
-	}
-	ordenarPorPontuacao();*/
+	fazerMutacao();
+	var i = 0;
+	//for(i; i < 9; i++){
+	//while(i < 9){
+		jogar(vetorJogadores[0]);
+	//}
+	//}
+	//ordenarPorPontuacao();
 }
 
 //função de crossover dos cromossomos de controle do jogo
@@ -449,14 +452,14 @@ function crossover(){
 			vetorJogadores[i]['direita'] = vetorJogadores[i-5]['direita'];
 			vetorJogadores[i]['esquerda'] = vetorJogadores[i-4]['esquerda'];
 		}else{
-			vetorJogadores[i]['direita'] = modelo2[i-4]['direita'];
-			vetorJogadores[i]['esquerda'] = modelo1[i-5]['esquerda'];
+			vetorJogadores[i]['direita'] = vetorJogadores[i-4]['direita'];
+			vetorJogadores[i]['esquerda'] = vetorJogadores[i-5]['esquerda'];
 		}
 	}
 }
 
 //função que usa mutação para criar cromossomo novo
-function mutacao(){
+function fazerMutacao(){
 	var cromossomoBase = gerarAleatorio(9,0);//Math.floor(Math.random() * (9 - 0 + 1)) + 0;
 	if(Math.random() >= 0.5){
 		mutacao.direita = vetorJogadores[cromossomoBase].direita;

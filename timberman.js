@@ -52,7 +52,69 @@ for(var n=0; n<10; n++) {
 	number[n] 		= loadSprite("assets/image/numbers.png", onReady);
 }
 
-var teste = 1;
+//cromossomos de controle do jogo
+var jogador1 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var jogador2 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var jogador3 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+var jogador4 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var jogador5 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+//cromossomos gerados por crossover dos objetos de controle
+var crossover1 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover2 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover3 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover4 = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+//cromossomo gerado por mutação
+var mutacao = {
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var vetorJogadores = [jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao];
 
 // Progress bar
 var timecontainer	= loadSprite("assets/image/time-container.png", onReady);
@@ -263,7 +325,7 @@ function direita(){
 	man.x = 800;
 	flipSprite(man, -1, 1);
 	man.action = true;
-	acao();
+	//acao();
 	
 }
 
@@ -273,20 +335,20 @@ function esquerda(){
 	man.x = 263;
 	flipSprite(man, 1, 1);
 	man.action = true;
-	acao();	
+	//acao();	
 }
 
 
-function jogar(){
+function jogar(jogador){
 		var boolean_controle = Math.random() >= 0.5;
     	setInterval(function(){
 		//var random_boolean = Math.random() >= 0.5;
-		if(boolean_controle == true && verificaProximoTronco()=="branchright"){
+		if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
 			boolean_controle = false
 			//direita();
 			//console.log(verificaProximoTronco());
 		}else{
-			if(boolean_controle == false && verificaProximoTronco()=="branchleft"){
+			if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
 				boolean_controle = true;
 			}
 		}
@@ -294,12 +356,14 @@ function jogar(){
 			direita();
 		else
 			esquerda();
+		
+		acao(jogador);
 	}, 500)
 	
 	//setTimeout(function(){esquerda()}, 2000)
 }
 
-function acao(){
+function acao(jogador){
 	if (man.action == true) {
 		if (level == levelLoad) {
 			playSound(theme, true);
@@ -341,6 +405,7 @@ function acao(){
 		// Une fois le tronc coupé, on vérifie si le tronc qui retombe n'est pas une branche qui pourrait heurter le bucheron
 		if (man.data == "left" && trunk[0].data == "branchleft" || man.data == "right" && trunk[0].data == "branchright") {
 			//gameOver();
+			jogador.pontuacao = score;
 			restartGame();
 			level =levelLoad;
 		} 	
@@ -351,4 +416,64 @@ function acao(){
 
 function verificaProximoTronco(){
 	return trunk[1].data;
+}
+
+//preenche os cromossomos iniciais
+function preencheJogadores(){
+	//var vetorJogadores = {jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao}
+	var jogador;
+	var i;
+	for(i=0; i<5; i++){
+		jogador=vetorJogadores[i];
+		jogador['direita'] = gerarAleatorio(4,1);//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
+		jogador['esquerda'] = gerarAleatorio(4,1);//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
+	}
+}
+
+function iniciar(){
+	preencheJogadores();
+	crossover();
+	mutacao();
+	/*var i = 0;
+	for(i; i < 9; i++){
+		jogar(vetor[i]);
+	}
+	ordenarPorPontuacao();*/
+}
+
+//função de crossover dos cromossomos de controle do jogo
+function crossover(){
+	var i = 5;
+	for(i; i < 9; i++){
+		if(Math.random() >= 0.5){
+			vetorJogadores[i]['direita'] = vetorJogadores[i-5]['direita'];
+			vetorJogadores[i]['esquerda'] = vetorJogadores[i-4]['esquerda'];
+		}else{
+			vetorJogadores[i]['direita'] = modelo2[i-4]['direita'];
+			vetorJogadores[i]['esquerda'] = modelo1[i-5]['esquerda'];
+		}
+	}
+}
+
+//função que usa mutação para criar cromossomo novo
+function mutacao(){
+	var cromossomoBase = gerarAleatorio(9,0);//Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+	if(Math.random() >= 0.5){
+		mutacao.direita = vetorJogadores[cromossomoBase].direita;
+		mutacao.esquerda = gerarAleatorio(4,1);
+	}else{
+		mutacao.direita = gerarAleatorio(4,1);
+		mutacao.esquerda = vetorJogadores[cromossomoBase].direita;
+	}
+}
+
+function gerarAleatorio(max, min){
+	return Math.floor(Math.random() * (max -min + 1)) + min;
+}
+
+//Ordena os cromossomos por pontuação para ver o Fitness
+function ordenarPorPontuacao(){
+	vetorJogadores.sort(function(a,b){
+		return a.pontuacao - b.pontuacao;
+	});
 }

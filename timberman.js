@@ -114,6 +114,8 @@ var mutacao = {
 	pontuacao: 0
 };
 
+var intervalo;
+
 var vetorJogadores = [jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao];
 
 // Progress bar
@@ -296,25 +298,25 @@ function renderGame() {
 	}
 	
 	// Evenements clavier et souris 
-	/*if (keyboardReleased(KEY_LEFT) && level != levelGameOver) {
+	if (keyboardReleased(KEY_LEFT) && level != levelGameOver) {
 		man.data = "left";
 		man.x = 263;
 		flipSprite(man, 1, 1);
 		man.action = true;		
-	}*/
+	}
 
-	/*if (keyboardReleased(KEY_RIGHT) && level != levelGameOver) {
+	if (keyboardReleased(KEY_RIGHT) && level != levelGameOver) {
 		man.data = "right";
 		man.x = 800;
 		flipSprite(man, -1, 1);
 		man.action = true;
-		sleep(2000);
-	}*/
+		//sleep(2000);
+	}
 
-	/*if (keyboardReleased(KEY_ENTER) && level == levelGameOver) {
+	if (keyboardReleased(KEY_ENTER) && level == levelGameOver) {
 		restartGame();
 		level =levelLoad;
-	}*/
+	}
 	 
 	//acao();
 
@@ -341,8 +343,13 @@ function esquerda(){
 
 function jogar(jogador){
 		var boolean_controle = Math.random() >= 0.5;
-    	var jogando = setInterval(function(){
-			if(level==levelLoad) clearInterval(jogando);
+		console.log(jogador['direita']);
+		console.log(jogador['esquerda']);
+		
+    	intervalo = setInterval(function(){
+			/*if(level==levelLoad) {
+				clearInterval(jogando);
+			}*/
 			//var random_boolean = Math.random() >= 0.5;
 			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
 				boolean_controle = false
@@ -377,9 +384,10 @@ function acao(jogador){
 				
 		// Est ce une branche qui pourrait heurter le bucheron
 		if (man.data == "left" && trunk[0].data == "branchleft" || man.data == "right" && trunk[0].data == "branchright") {
-			//gameOver();
+			gameOver();
 			restartGame();
 			level =levelLoad;
+			clearInterval(intervalo);
 		} 
 				
 		// Mise à jour du scrore 
@@ -409,6 +417,8 @@ function acao(jogador){
 			jogador.pontuacao = score;
 			restartGame();
 			level =levelLoad;
+			clearInterval(intervalo);
+			//level=levelGameOver;
 		} 	
 		man.action = false;
 	}
@@ -438,7 +448,16 @@ function iniciar(){
 	var i = 0;
 	//for(i; i < 9; i++){
 	//while(i < 9){
-		jogar(vetorJogadores[0]);
+	jogar(vetorJogadores[0]);
+	//jogar(vetorJogadores[1]);
+	/*jogar(vetorJogadores[1]);
+	jogar(vetorJogadores[2]);
+	jogar(vetorJogadores[3]);
+	jogar(vetorJogadores[4]);
+	jogar(vetorJogadores[5]);
+	jogar(vetorJogadores[6]);
+	jogar(vetorJogadores[7]);*/
+	
 	//}
 	//}
 	//ordenarPorPontuacao();

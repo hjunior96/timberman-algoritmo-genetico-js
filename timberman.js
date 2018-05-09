@@ -323,6 +323,7 @@ function renderGame() {
 };
 
 function direita(){
+	console.log('executou direita');
 	man.data = "right";
 	man.x = 800;
 	flipSprite(man, -1, 1);
@@ -333,6 +334,7 @@ function direita(){
 
 
 function esquerda(){
+	console.log('executou esquerda');
 	man.data = "left";
 	man.x = 263;
 	flipSprite(man, 1, 1);
@@ -345,12 +347,38 @@ function jogar(jogador){
 		var boolean_controle = Math.random() >= 0.5;
 		console.log(jogador['direita']);
 		console.log(jogador['esquerda']);
-		
+		/* var i=0;
+		do{
+			console.log('entrou no loop');
+			(function(i){
+				console.log('entrou na funcao');
+				setTimeout(function(){
+					console.log('executando');
+					var random_boolean = Math.random() >= 0.5;
+					if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
+						boolean_controle = false
+						//direita();
+						//console.log(verificaProximoTronco());
+					}else{
+						if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+							boolean_controle = true;
+						}
+					}
+					if(boolean_controle == true){
+						direita();
+					}else{
+						esquerda();
+					}
+					acao(jogador);
+					
+				}, 500*i);	
+			})(i++)
+		}while(level != levelLoad) */
     	intervalo = setInterval(function(){
 			/*if(level==levelLoad) {
 				clearInterval(jogando);
 			}*/
-			//var random_boolean = Math.random() >= 0.5;
+			var random_boolean = Math.random() >= 0.5;
 			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
 				boolean_controle = false
 				//direita();
@@ -360,11 +388,12 @@ function jogar(jogador){
 					boolean_controle = true;
 				}
 			}
-			if(boolean_controle == true)
+			if(boolean_controle == true){
 				direita();
-			else
+			}	
+			else{
 				esquerda();
-			
+			}
 			acao(jogador);
 		}, 500)
 	
@@ -384,7 +413,8 @@ function acao(jogador){
 				
 		// Est ce une branche qui pourrait heurter le bucheron
 		if (man.data == "left" && trunk[0].data == "branchleft" || man.data == "right" && trunk[0].data == "branchright") {
-			gameOver();
+			//gameOver();
+			jogador.pontuacao = score;
 			restartGame();
 			level =levelLoad;
 			clearInterval(intervalo);
@@ -448,7 +478,10 @@ function iniciar(){
 	var i = 0;
 	//for(i; i < 9; i++){
 	//while(i < 9){
+	console.log("primeiro jogador");
+	//level=levelPlay;
 	jogar(vetorJogadores[0]);
+	//console.log("segundo jogador");
 	//jogar(vetorJogadores[1]);
 	/*jogar(vetorJogadores[1]);
 	jogar(vetorJogadores[2]);

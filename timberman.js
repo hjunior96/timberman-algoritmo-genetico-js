@@ -116,6 +116,8 @@ var mutacao = {
 
 var intervalo;
 
+var random_boolean;
+
 var vetorJogadores = [jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao];
 
 // Progress bar
@@ -343,10 +345,10 @@ function esquerda(){
 }
 
 
-function jogar(jogador){
+function jogar1(){
 		var boolean_controle = Math.random() >= 0.5;
-		console.log(jogador['direita']);
-		console.log(jogador['esquerda']);
+		console.log(jogador1['direita']);
+		console.log(jogador1['esquerda']);
 		/* var i=0;
 		do{
 			console.log('entrou no loop');
@@ -374,28 +376,125 @@ function jogar(jogador){
 				}, 500*i);	
 			})(i++)
 		}while(level != levelLoad) */
-    	intervalo = setInterval(function(){
+    	//intervalo = setInterval(function(){
 			/*if(level==levelLoad) {
 				clearInterval(jogando);
 			}*/
-			var random_boolean = Math.random() >= 0.5;
-			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-				boolean_controle = false
+			//random_boolean = Math.random() >= 0.5;
+			//if(boolean_controle == true && verificaProximoTronco(jogador1.direita)=="branchright"){
+				//boolean_controle = false
 				//direita();
 				//console.log(verificaProximoTronco());
+			//}else{
+				//if(boolean_controle == false && verificaProximoTronco(jogador1.esquerda)=="branchleft"){
+				//	boolean_controle = true;
+				//}
+			//}
+			//if(boolean_controle == true){
+			//	direita();
+			//}	
+			//else{
+			//	esquerda();
+			//}
+			//acao(jogador1);
+		//}, 500)
+		
+		 while(level != levelLoad){
+			 sleep_until(3);
+			//setTimeout(function(){console.log('executando')},5000);
+			random_boolean = Math.random() >= 0.5;
+			if(boolean_controle == true && verificaProximoTronco(jogador1.direita)=="branchright"){
+				boolean_controle = false
 			}else{
-				if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+				if(boolean_controle == false && verificaProximoTronco(jogador1.esquerda)=="branchleft"){
 					boolean_controle = true;
 				}
-			}
+			}	
 			if(boolean_controle == true){
 				direita();
 			}	
 			else{
 				esquerda();
 			}
-			acao(jogador);
-		}, 500)
+			acao(jogador1);
+		}
+	
+	//setTimeout(function(){esquerda()}, 2000)
+}
+
+function jogar2(){
+		var boolean_controle = Math.random() >= 0.5;
+		console.log(jogador2['direita']);
+		console.log(jogador2['esquerda']);
+		/* var i=0;
+		do{
+			console.log('entrou no loop');
+			(function(i){
+				console.log('entrou na funcao');
+				setTimeout(function(){
+					console.log('executando');
+					var random_boolean = Math.random() >= 0.5;
+					if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
+						boolean_controle = false
+						//direita();
+						//console.log(verificaProximoTronco());
+					}else{
+						if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+							boolean_controle = true;
+						}
+					}
+					if(boolean_controle == true){
+						direita();
+					}else{
+						esquerda();
+					}
+					acao(jogador);
+					
+				}, 500*i);	
+			})(i++)
+		}while(level != levelLoad) */
+    	//intervalo = setInterval(function(){
+			/*if(level==levelLoad) {
+				clearInterval(jogando);
+			}*/
+			//random_boolean = Math.random() >= 0.5;
+			//if(boolean_controle == true && verificaProximoTronco(jogador2.direita)=="branchright"){
+				//boolean_controle = false
+				//direita();
+				//console.log(verificaProximoTronco());
+			//}else{
+				//{
+				//	boolean_controle = true;
+				//}
+			//}
+			//if(boolean_controle == true){
+				//direita();
+			//}	
+			//else{
+			//	esquerda();
+			//}
+			//acao(jogador2);
+		//}, 500)
+		
+		while(level != levelLoad){
+			sleep_until(3);
+			//setTimeout(function(){console.log('executando')},5000);
+			random_boolean = Math.random() >= 0.5;
+			if(boolean_controle == true && verificaProximoTronco(jogador2.direita)=="branchright"){
+				boolean_controle = false
+			}else{
+				if(boolean_controle == false && verificaProximoTronco(jogador2.esquerda)=="branchleft"){
+					boolean_controle = true;
+				}
+			}	
+			if(boolean_controle == true){
+				direita();
+			}	
+			else{
+				esquerda();
+			}
+			acao(jogador2);
+		}
 	
 	//setTimeout(function(){esquerda()}, 2000)
 }
@@ -479,10 +578,10 @@ function iniciar(){
 	//for(i; i < 9; i++){
 	//while(i < 9){
 	console.log("primeiro jogador");
-	//level=levelPlay;
-	jogar(vetorJogadores[0]);
+	level=levelPlay;
+	jogar1();
 	//console.log("segundo jogador");
-	//jogar(vetorJogadores[1]);
+	jogar2();
 	/*jogar(vetorJogadores[1]);
 	jogar(vetorJogadores[2]);
 	jogar(vetorJogadores[3]);
@@ -532,3 +631,10 @@ function ordenarPorPontuacao(){
 		return a.pontuacao - b.pontuacao;
 	});
 }
+
+function sleep_until (seconds) {
+   var max_sec = new Date().getTime();
+   while (new Date() < max_sec + seconds * 1000) {}
+    return true;
+}
+

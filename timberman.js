@@ -54,12 +54,14 @@ for(var n=0; n<10; n++) {
 
 //cromossomos de controle do jogo
 var jogador1 = {
+	identificador: 1,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 
 var jogador2 = {
+	identificador: 2,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
@@ -129,6 +131,8 @@ var timebar			= loadSprite("assets/image/time-bar.png", onReady);
 var cut 			= loadSound("assets/sound/cut.mp3");
 var death 			= loadSound("assets/sound/death.mp3");
 var menubar			= loadSound("assets/sound/menu.mp3");
+
+var morreu = false;
 
 function onReady() {
 	loadProgress++
@@ -325,7 +329,7 @@ function renderGame() {
 };
 
 function direita(){
-	console.log('executou direita');
+	//console.log('executou direita');
 	man.data = "right";
 	man.x = 800;
 	flipSprite(man, -1, 1);
@@ -336,7 +340,7 @@ function direita(){
 
 
 function esquerda(){
-	console.log('executou esquerda');
+	//console.log('executou esquerda');
 	man.data = "left";
 	man.x = 263;
 	flipSprite(man, 1, 1);
@@ -345,159 +349,31 @@ function esquerda(){
 }
 
 
-function jogar1(){
+function jogar(jogador){
+		console.log('jogador '+ jogador.identificador);
 		var boolean_controle = Math.random() >= 0.5;
-		console.log(jogador1['direita']);
-		console.log(jogador1['esquerda']);
-		/* var i=0;
-		do{
-			console.log('entrou no loop');
-			(function(i){
-				console.log('entrou na funcao');
-				setTimeout(function(){
-					console.log('executando');
-					var random_boolean = Math.random() >= 0.5;
-					if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-						boolean_controle = false
-						//direita();
-						//console.log(verificaProximoTronco());
-					}else{
-						if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
-							boolean_controle = true;
-						}
-					}
-					if(boolean_controle == true){
-						direita();
-					}else{
-						esquerda();
-					}
-					acao(jogador);
-					
-				}, 500*i);	
-			})(i++)
-		}while(level != levelLoad) */
-    	//intervalo = setInterval(function(){
-			/*if(level==levelLoad) {
-				clearInterval(jogando);
-			}*/
-			//random_boolean = Math.random() >= 0.5;
-			//if(boolean_controle == true && verificaProximoTronco(jogador1.direita)=="branchright"){
-				//boolean_controle = false
-				//direita();
-				//console.log(verificaProximoTronco());
-			//}else{
-				//if(boolean_controle == false && verificaProximoTronco(jogador1.esquerda)=="branchleft"){
-				//	boolean_controle = true;
-				//}
-			//}
-			//if(boolean_controle == true){
-			//	direita();
-			//}	
-			//else{
-			//	esquerda();
-			//}
-			//acao(jogador1);
-		//}, 500)
-		
-		 while(level != levelLoad){
-			 sleep_until(3);
-			//setTimeout(function(){console.log('executando')},5000);
-			random_boolean = Math.random() >= 0.5;
-			if(boolean_controle == true && verificaProximoTronco(jogador1.direita)=="branchright"){
-				boolean_controle = false
-			}else{
-				if(boolean_controle == false && verificaProximoTronco(jogador1.esquerda)=="branchleft"){
-					boolean_controle = true;
-				}
-			}	
-			if(boolean_controle == true){
-				direita();
-			}	
-			else{
-				esquerda();
+		//intervalo = setInterval(function(){
+			
+		if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
+			boolean_controle = false
+			//direita();
+			//console.log(verificaProximoTronco());
+		}else{
+			if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+			//	boolean_controle = true;
 			}
-			acao(jogador1);
 		}
-	
-	//setTimeout(function(){esquerda()}, 2000)
+		if(boolean_controle == true){
+			direita();
+		}	
+		else{
+			esquerda();
+		}
+		acao(jogador);
+	//}, 500);
 }
 
-function jogar2(){
-		var boolean_controle = Math.random() >= 0.5;
-		console.log(jogador2['direita']);
-		console.log(jogador2['esquerda']);
-		/* var i=0;
-		do{
-			console.log('entrou no loop');
-			(function(i){
-				console.log('entrou na funcao');
-				setTimeout(function(){
-					console.log('executando');
-					var random_boolean = Math.random() >= 0.5;
-					if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-						boolean_controle = false
-						//direita();
-						//console.log(verificaProximoTronco());
-					}else{
-						if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
-							boolean_controle = true;
-						}
-					}
-					if(boolean_controle == true){
-						direita();
-					}else{
-						esquerda();
-					}
-					acao(jogador);
-					
-				}, 500*i);	
-			})(i++)
-		}while(level != levelLoad) */
-    	//intervalo = setInterval(function(){
-			/*if(level==levelLoad) {
-				clearInterval(jogando);
-			}*/
-			//random_boolean = Math.random() >= 0.5;
-			//if(boolean_controle == true && verificaProximoTronco(jogador2.direita)=="branchright"){
-				//boolean_controle = false
-				//direita();
-				//console.log(verificaProximoTronco());
-			//}else{
-				//{
-				//	boolean_controle = true;
-				//}
-			//}
-			//if(boolean_controle == true){
-				//direita();
-			//}	
-			//else{
-			//	esquerda();
-			//}
-			//acao(jogador2);
-		//}, 500)
-		
-		while(level != levelLoad){
-			sleep_until(3);
-			//setTimeout(function(){console.log('executando')},5000);
-			random_boolean = Math.random() >= 0.5;
-			if(boolean_controle == true && verificaProximoTronco(jogador2.direita)=="branchright"){
-				boolean_controle = false
-			}else{
-				if(boolean_controle == false && verificaProximoTronco(jogador2.esquerda)=="branchleft"){
-					boolean_controle = true;
-				}
-			}	
-			if(boolean_controle == true){
-				direita();
-			}	
-			else{
-				esquerda();
-			}
-			acao(jogador2);
-		}
-	
-	//setTimeout(function(){esquerda()}, 2000)
-}
+
 
 function acao(jogador){
 	if (man.action == true) {
@@ -516,7 +392,9 @@ function acao(jogador){
 			jogador.pontuacao = score;
 			restartGame();
 			level =levelLoad;
-			clearInterval(intervalo);
+			morreu=true;
+			//continue;
+			//clearInterval(intervalo);
 		} 
 				
 		// Mise à jour du scrore 
@@ -546,7 +424,9 @@ function acao(jogador){
 			jogador.pontuacao = score;
 			restartGame();
 			level =levelLoad;
-			clearInterval(intervalo);
+			morreu=true;
+			//continue;
+			//clearInterval(intervalo);
 			//level=levelGameOver;
 		} 	
 		man.action = false;
@@ -575,24 +455,28 @@ function iniciar(){
 	crossover();
 	fazerMutacao();
 	var i = 0;
-	//for(i; i < 9; i++){
-	//while(i < 9){
-	console.log("primeiro jogador");
-	level=levelPlay;
-	jogar1();
-	//console.log("segundo jogador");
-	jogar2();
-	/*jogar(vetorJogadores[1]);
-	jogar(vetorJogadores[2]);
-	jogar(vetorJogadores[3]);
-	jogar(vetorJogadores[4]);
-	jogar(vetorJogadores[5]);
-	jogar(vetorJogadores[6]);
-	jogar(vetorJogadores[7]);*/
 	
+	//faz o algoritmo rodar por tempo indeterminado
+	//while(true){
+		//percorre todo o vetor de jogadores
+		//while(10>i++){
+			level=levelPlay;
+			executarFila([
+				function(){
+					jogar(jogador1);
+				},
+				function(){
+					jogar(jogador2);
+				}
+				], 50,1000);
+			
+			//jogar(vetorJogadores[0]);
+			
+		//}
+		//ordenarPorPontuacao();
+		//crossover();
+		//fazerMutacao();
 	//}
-	//}
-	//ordenarPorPontuacao();
 }
 
 //função de crossover dos cromossomos de controle do jogo
@@ -636,5 +520,24 @@ function sleep_until (seconds) {
    var max_sec = new Date().getTime();
    while (new Date() < max_sec + seconds * 1000) {}
     return true;
+}
+
+async function executarFila(fila, vezes, tempoEntre){
+	var i = 0;
+	k=0;
+	fila.forEach(function(funcao){
+		vetorJogadores[0].direita;
+		vetorJogadores[0].esquerda;
+		
+		for(k=0; k < vezes; k++){
+		//while(level!=levelLoad){
+			if(morreu){
+				morreu = false;
+				continue;
+			}
+			i++;
+			setTimeout(funcao,(i*tempoEntre));
+		}
+	});
 }
 

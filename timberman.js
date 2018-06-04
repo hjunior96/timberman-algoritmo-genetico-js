@@ -68,17 +68,20 @@ var jogador2 = {
 };
 
 var jogador3 = {
+	identificador: 3,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 var jogador4 = {
+	identificador: 4,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 
 var jogador5 = {
+	identificador:5,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
@@ -86,24 +89,28 @@ var jogador5 = {
 
 //cromossomos gerados por crossover dos objetos de controle
 var crossover1 = {
+	identificador: 6,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 
 var crossover2 = {
+	identificador: 7,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 
 var crossover3 = {
+	identificador: 8,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
 };
 
 var crossover4 = {
+	identificador: 9,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
@@ -111,6 +118,7 @@ var crossover4 = {
 
 //cromossomo gerado por mutação
 var mutacao = {
+	identificador: 10,
 	direita: 0,
 	esquerda: 0,
 	pontuacao: 0
@@ -132,7 +140,9 @@ var cut 			= loadSound("assets/sound/cut.mp3");
 var death 			= loadSound("assets/sound/death.mp3");
 var menubar			= loadSound("assets/sound/menu.mp3");
 
+var swapped;
 var morreu = false;
+var temp;
 
 function onReady() {
 	loadProgress++
@@ -349,27 +359,38 @@ function esquerda(){
 }
 
 
-function jogar(jogador){
+
+async function jogar(jogador){
+	//return new Promise(resolve => function(){
 		console.log('jogador '+ jogador.identificador);
+		console.log('direita do jogador ' + jogador.identificador+' : ' + jogador.direita);
+		console.log('esquerda do jogador ' + jogador.identificador+ ': '+ jogador.esquerda);
 		var boolean_controle = Math.random() >= 0.5;
+
 		//intervalo = setInterval(function(){
+		level=levelPlay;
 			
-		if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-			boolean_controle = false
-			//direita();
-			//console.log(verificaProximoTronco());
-		}else{
-			if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
-			//	boolean_controle = true;
+		while(level != levelLoad){
+			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
+				boolean_controle = false
+				//direita();
+				//console.log(verificaProximoTronco());
+			}else{
+				if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
+					boolean_controle = true;
+				}
 			}
+			if(boolean_controle == true){
+				direita();
+			}	
+			else{
+				esquerda();
+			}
+			acao(jogador);
+			await sleep(500);
 		}
-		if(boolean_controle == true){
-			direita();
-		}	
-		else{
-			esquerda();
-		}
-		acao(jogador);
+		//},500);
+	//});
 	//}, 500);
 }
 
@@ -445,42 +466,35 @@ function preencheJogadores(){
 	var i;
 	for(i=0; i<5; i++){
 		jogador=vetorJogadores[i];
-		jogador['direita'] = gerarAleatorio(4,1);//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
-		jogador['esquerda'] = gerarAleatorio(4,1);//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
+		var direita=gerarAleatorio(4,2);
+		var esquerda=gerarAleatorio(4,2);
+		jogador['direita'] = direita;//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
+		jogador['esquerda'] =esquerda;//Math.floor(Math.random() * (4 - 1 + 1)) + 1;
 	}
 }
 
-function iniciar(){
+async function iniciar(){
 	preencheJogadores();
 	crossover();
 	fazerMutacao();
 	var i = 0;
 	
 	//faz o algoritmo rodar por tempo indeterminado
-	//while(true){
-		//percorre todo o vetor de jogadores
-		//while(10>i++){
-			level=levelPlay;
-			executarFila([
-				function(){
-					jogar(jogador1);
-				},
-				function(){
-					jogar(jogador2);
-				}
-				], 50,1000);
-			
-			//jogar(vetorJogadores[0]);
-			
-		//}
-		//ordenarPorPontuacao();
-		//crossover();
-		//fazerMutacao();
-	//}
+	while(true){
+		level=levelPlay;
+		for(const item of vetorJogadores){
+			await jogar(item);
+			console.log('pontuacao: ' + item.pontuacao);
+		}
+		await(ordenarPorPontuacao());
+		await(crossover());
+		await(fazerMutacao());
+		await(renomearJogadores());
+	}					
 }
 
 //função de crossover dos cromossomos de controle do jogo
-function crossover(){
+async function crossover(){
 	var i = 5;
 	for(i; i < 9; i++){
 		if(Math.random() >= 0.5){
@@ -494,7 +508,7 @@ function crossover(){
 }
 
 //função que usa mutação para criar cromossomo novo
-function fazerMutacao(){
+async function fazerMutacao(){
 	var cromossomoBase = gerarAleatorio(9,0);//Math.floor(Math.random() * (9 - 0 + 1)) + 0;
 	if(Math.random() >= 0.5){
 		mutacao.direita = vetorJogadores[cromossomoBase].direita;
@@ -510,16 +524,25 @@ function gerarAleatorio(max, min){
 }
 
 //Ordena os cromossomos por pontuação para ver o Fitness
-function ordenarPorPontuacao(){
-	vetorJogadores.sort(function(a,b){
-		return a.pontuacao - b.pontuacao;
-	});
+async function ordenarPorPontuacao(){
+    do {
+        swapped = false;
+        for (var i=0; i < vetorJogadores.length-1; i++) {
+            if (parseInt(vetorJogadores[i].pontuacao) < parseInt(vetorJogadores[i+1].pontuacao)) {
+                temp = vetorJogadores[i];
+                vetorJogadores[i] = vetorJogadores[i+1];
+                vetorJogadores[i+1] = temp;
+                swapped = true;
+            }
+        }
+    } while (swapped);
+	console.log(vetorJogadores);
 }
 
-function sleep_until (seconds) {
+async function sleep_until (seconds) {
    var max_sec = new Date().getTime();
    while (new Date() < max_sec + seconds * 1000) {}
-    return true;
+   return true;
 }
 
 async function executarFila(fila, vezes, tempoEntre){
@@ -539,5 +562,24 @@ async function executarFila(fila, vezes, tempoEntre){
 			setTimeout(funcao,(i*tempoEntre));
 		}
 	});
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function comparar(a, b){
+	if (parseInt(a.pontuacao) < parseInt(b.pontuacao))
+		return 1;
+	if (parseInt(a.pontuacao) > parseInt(b.pontuacao))
+		return -1;
+	return 0;
+}
+
+async function renomearJogadores(){
+	var i =0;
+	for(i =0; i < vetorJogadores.length; i++){
+		vetorJogadores[i].identificador =(i+1);
+	}
 }
 

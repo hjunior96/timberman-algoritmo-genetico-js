@@ -9,7 +9,7 @@ O processo é executado infinitamente até que o algoritmo encontre a solução 
 ## O que é necessário para executar o algoritmo?
 Para poder testar e ver o algorimo, é necessário apenas o navegador Google Chrome.
 
-##Como executar?
+## Como executar?
 Para executar, basta entrar nas ferramentas de desenvolvedor do Chrome(F12), abrir o console e digitar "iniciar()" e o algorimo irá começar a rodar. 
 
 ### Algoritmo do jogo encontrado em: https://github.com/falsam/Timberman-JS

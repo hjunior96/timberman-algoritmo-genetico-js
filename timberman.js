@@ -481,6 +481,7 @@ async function iniciar(){
 	
 	//faz o algoritmo rodar por tempo indeterminado
 	while(true){
+		console.log('ITERACAO NUMERO ' + ++i);
 		level=levelPlay;
 		for(const item of vetorJogadores){
 			await jogar(item);
@@ -525,17 +526,7 @@ function gerarAleatorio(max, min){
 
 //Ordena os cromossomos por pontuação para ver o Fitness
 async function ordenarPorPontuacao(){
-    do {
-        swapped = false;
-        for (var i=0; i < vetorJogadores.length-1; i++) {
-            if (parseInt(vetorJogadores[i].pontuacao) < parseInt(vetorJogadores[i+1].pontuacao)) {
-                temp = vetorJogadores[i];
-                vetorJogadores[i] = vetorJogadores[i+1];
-                vetorJogadores[i+1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
+    vetorJogadores.sort(comparar);
 	console.log(vetorJogadores);
 }
 

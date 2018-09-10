@@ -134,6 +134,7 @@ var vetorJogadores = [];
 var numeroJogadoresIniciais 	= 5;
 var numeroJogadoresCrossover 	= numeroJogadoresIniciais -1;
 var porcentagemMutacao			= 15;
+var tamanhoCromossomos			= 100;
 
 // Progress bar
 var timecontainer	= loadSprite("assets/image/time-container.png", onReady);
@@ -371,28 +372,21 @@ async function jogar(jogador){
 		console.log('direita do jogador ' + jogador.identificador+' : ' + jogador.direita);
 		console.log('esquerda do jogador ' + jogador.identificador+ ': '+ jogador.esquerda);
 		var boolean_controle = Math.random() >= 0.5;
+		var i = 0;
 
 		//intervalo = setInterval(function(){
 		level=levelPlay;
 			
-		while(level != levelLoad){
-			if(boolean_controle == true && verificaProximoTronco(jogador.direita)=="branchright"){
-				boolean_controle = false
-				//direita();
-				//console.log(verificaProximoTronco());
-			}else{
-				if(boolean_controle == false && verificaProximoTronco(jogador.esquerda)=="branchleft"){
-					boolean_controle = true;
-				}
-			}
-			if(boolean_controle == true){
-				direita();
+		while(level != levelLoad && i < tamanhoCromossomos){
+			if(jogador['movimentos'][i]){
+				esquerda();
 			}	
 			else{
-				esquerda();
+				direita();
 			}
+			i++;
 			acao(jogador);
-			await sleep(500);
+			await sleep(250);
 		}
 		//},500);
 	//});
@@ -477,7 +471,7 @@ async function iniciar(){
 	
 	//faz o algoritmo rodar por tempo indeterminado
 	while(true){
-		console.log('ITERACAO NUMERO ' + ++i);
+		console.log('GERACAO NUMERO ' + ++i);
 		level=levelPlay;
 		for(const item of vetorJogadores){
 			await jogar(item);
@@ -496,12 +490,15 @@ async function iniciar(){
 function preencheJogadores(){
 	//var vetorJogadores = {jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao}
 	var jogador;
-	var i;
+	var vetorMovimentos = [];
+	var i,j;
 	for(i=0; i< numeroJogadoresIniciais; i++){
+		for(j=0; j < tamanhoCromossomos; j++){
+			vetorMovimentos.push(Math.random() <= 0.5);
+		}
 		jogador = {
 			identificador	: 	i+1,
-			direita   		: 	gerarAleatorio(6,1),
-			esquerda  		: 	gerarAleatorio(6,1),
+			movimentos		:	vetorMovimentos, 	
 			pontuacao 		: 	0
 		}
 		vetorJogadores.push(jogador);
@@ -509,8 +506,7 @@ function preencheJogadores(){
 	for(i = numeroJogadoresIniciais; i < numeroJogadoresIniciais + numeroJogadoresCrossover; i++){
 		jogador =  {
 			identificador 	: 	i+1,
-			direita			: 	0,
-			esquerda		: 	0,
+			movimentos		:  [],
 			pontuacao 		: 	0
 		}
 		
@@ -525,11 +521,11 @@ async function crossover(){
 	var i = numeroJogadoresIniciais;
 	for(i; i < numeroJogadoresIniciais + numeroJogadoresCrossover; i++){
 		if(Math.random() >= 0.5){
-			vetorJogadores[i]['direita'] = vetorJogadores[i-numeroJogadoresCrossover]['direita'];
-			vetorJogadores[i]['esquerda'] = vetorJogadores[i-(numeroJogadoresCrossover-1)]['esquerda'];
+			vetorJogadores[i]['movimentos'] = vetorJogadores[i-numeroJogadoresCrossover]['movimentos'].slice(0,tamanhoCromossomos/2); 
+			vetorJogadores[i]['movimentos'] = vetorJogadores[i]['movimentos'].concat(vetorJogadores[i-(numeroJogadoresCrossover-1)] ['movimentos'].slice((tamanhoCromossomos/2) -1, tamanhoCromossomos));
 		}else{
-			vetorJogadores[i]['direita'] = vetorJogadores[i-(numeroJogadoresCrossover-1)]['direita'];
-			vetorJogadores[i]['esquerda'] = vetorJogadores[i-numeroJogadoresCrossover]['esquerda'];
+			vetorJogadores[i]['movimentos'] = vetorJogadores[i-(numeroJogadoresCrossover-1)]['movimentos'].slice(0,tamanhoCromossomos/2); 
+			vetorJogadores[i]['movimentos'] = vetorJogadores[i]['movimentos'].concat(vetorJogadores[i-numeroJogadoresCrossover] ['movimentos'].slice((tamanhoCromossomos/2) -1, tamanhoCromossomos));
 		}
 	}
 }
@@ -537,12 +533,7 @@ async function crossover(){
 //função que usa mutação para alterar um cromossomo
 async function fazerMutacao(){
 	var cromossomoBase = gerarAleatorio(numeroJogadoresCrossover+numeroJogadoresIniciais-1,0);//Math.floor(Math.random() * (9 - 0 + 1)) + 0;
-	if(Math.random() >= 0.5){
-		vetorJogadores[cromossomoBase].esquerda = gerarAleatorio(6,1);
-	}else{
-		vetorJogadores[cromossomoBase].direita = gerarAleatorio(6,1);
-		
-	}
+	vetorJogadores[Math.floor(Math.random() * tamanhoCromossomos)]['movimentos'] = inverteValor(vetorJogadores[Math.floor(Math.random() * tamanhoCromossomos)]['movimentos']);
 }
 
 function gerarAleatorio(max, min){
@@ -585,11 +576,13 @@ function sleep(ms) {
 }
 
 function comparar(a, b){
-	if (parseInt(a.pontuacao) < parseInt(b.pontuacao))
+	if (parseFloat(a.pontuacao) <= parseFloat(b.pontuacao)){
 		return 1;
-	if (parseInt(a.pontuacao) > parseInt(b.pontuacao))
-		return -1;
-	return 0;
+	}else{
+		if (parseFloat(a.pontuacao) > parseFloat(b.pontuacao)){
+			return -1;
+		}
+	}
 }
 
 async function renomearJogadores(){
@@ -597,5 +590,18 @@ async function renomearJogadores(){
 	for(i =0; i < vetorJogadores.length; i++){
 		vetorJogadores[i].identificador =(i+1);
 	}
+}
+
+function criarNovoArray(posicoes){
+	var vetor = [];
+	var i;
+	for(i = 0; i< posicoes; i++){
+		vetor.push(Math.random()<0.5);
+	}
+	return vetor;
+}
+
+function inverteValor(valorBinario){
+	return !valorBinario;
 }
 

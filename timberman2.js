@@ -52,10 +52,84 @@ for(var n=0; n<10; n++) {
 	number[n] 		= loadSprite("assets/image/numbers.png", onReady);
 }
 
-var vetorJogadores = [];
+/* //cromossomos de controle do jogo
+var jogador1 = {
+	identificador: 1,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
 
-var vetorTroncos   = [];
-var contadorTroncos=2;
+var jogador2 = {
+	identificador: 2,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var jogador3 = {
+	identificador: 3,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+var jogador4 = {
+	identificador: 4,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var jogador5 = {
+	identificador:5,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+//cromossomos gerados por crossover dos objetos de controle
+var crossover1 = {
+	identificador: 6,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover2 = {
+	identificador: 7,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover3 = {
+	identificador: 8,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+var crossover4 = {
+	identificador: 9,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+};
+
+//cromossomo gerado por mutação
+var mutacao = {
+	identificador: 10,
+	direita: 0,
+	esquerda: 0,
+	pontuacao: 0
+}; */
+
+//var intervalo;
+
+//var random_boolean;
+
+//var vetorJogadores = [jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao];
+var vetorJogadores = [];
 
 var numeroJogadoresIniciais 	= 50;
 var numeroJogadoresCrossover 	= numeroJogadoresIniciais -1;
@@ -79,10 +153,8 @@ var temp;
 
 function onReady() {
 	loadProgress++
+	
 	if (loadProgress == countSprites) {
-		
-		preencheTroncos();
-		console.log(vetorTroncos);
 		
 		// Changement du point d'ancrage du bucheron et ajout des animations
 		anchorSprite(man, 0.5, 0.5);
@@ -137,7 +209,7 @@ function initTrunk() {
 	levelscore = 1;
 }
 
-/* function addTrunk() {	
+function addTrunk() {	
 	for(var i = 1; i < 7; i++) {
 		// Si pas de tronçon
 		if (trunk[i] === 0) {
@@ -163,27 +235,6 @@ function initTrunk() {
 			}
 		}
 	}
-}
- */
-function addTrunk() {	
-	
-	for(var i = 1; i < 7; i++) {
-		if(trunk[i] === 0){
-			//3 chances em 5 de vir tronco sem galho
-			if (vetorTroncos[contadorTroncos] < 3) {
-				trunk[i] = copySprite(trunk1);
-			}else{
-				//Se for 3 coloca o tronco da esquerda
-				if (vetorTroncos[contadorTroncos]  == 3) {
-					trunk[i] = copySprite(branchleft);
-				//Se impar, coloca o tronco da direita
-				}else{
-					trunk[i] = copySprite(branchright);			
-				}
-			}
-		}
-	}
-	
 }
 
 function restartGame() {
@@ -294,7 +345,6 @@ function renderGame() {
 
 };
 
-//Funcao que simula movimento para a direita
 function direita(){
 	//console.log('executou direita');
 	man.data = "right";
@@ -305,7 +355,7 @@ function direita(){
 	
 }
 
-//Funcao que simula movimento para a esquerda
+
 function esquerda(){
 	//console.log('executou esquerda');
 	man.data = "left";
@@ -316,7 +366,7 @@ function esquerda(){
 }
 
 
-//Funcao para simular cada jogada
+
 async function jogar(jogador){
 	//return new Promise(resolve => function(){
 		console.log('jogador '+ jogador.identificador);
@@ -336,16 +386,14 @@ async function jogar(jogador){
 			i++;
 			acao(jogador);
 			await sleep(250);
-			contadorTroncos++;
 		}
-		
 		//},500);
 	//});
 	//}, 500);
 }
 
 
-//Funcao executada a cada jogada para fazer validacoes
+
 function acao(jogador){
 	if (man.action == true) {
 		if (level == levelLoad) {
@@ -363,7 +411,6 @@ function acao(jogador){
 			jogador.pontuacao = score;
 			console.log('Pontuacao: ' + jogador.pontuacao);
 			console.log('-----//-------');
-			contadorTroncos = 2;
 			if(score > maiorResultado) maiorResultado = score;
 			restartGame();
 			level =levelLoad;
@@ -399,7 +446,6 @@ function acao(jogador){
 			jogador.pontuacao = score;
 			console.log('Pontuacao: ' + jogador.pontuacao);
 			console.log('-----//-------');
-			contadorTroncos = 2;
 			if(score > maiorResultado) maiorResultado = score;
 			restartGame();
 			level =levelLoad;
@@ -414,10 +460,13 @@ function acao(jogador){
 }
 
 
+function verificaProximoTronco(distancia){
+	return trunk[distancia].data;
+}
+
 //Função a ser chamada para iniciar o algoritmo
 async function iniciar(){
 	preencheJogadores();
-	//console.log(vetorTroncos);
 	crossover();
 	if(Math.random <= porcentagemMutacao/100){
 		fazerMutacao();
@@ -447,20 +496,6 @@ async function iniciar(){
 	}					
 }
 
-//Funcao que preenche o vetor que dita quais troncos serão colocados no cenário
-function preencheTroncos(){
-	vetorTroncos[0] = 0;
-	vetorTroncos[1] = 0;
-	var i;
-	for(i=2;i<tamanhoCromossomos;i=i+2){
-		vetorTroncos[i] = Math.round(Math.random() * 4);
-		while(vetorTroncos[i] == vetorTroncos[i-1] && vetorTroncos[i] >= 3){
-			vetorTroncos[i] = Math.round(Math.random() * 4);
-		}
-		vetorTroncos[i+1] = 2;
-	}
-}
-
 //preenche os cromossomos iniciais
 function preencheJogadores(){
 	//var vetorJogadores = {jogador1,jogador2,jogador3,jogador4,jogador5,crossover1,crossover2,crossover3,crossover4, mutacao}
@@ -471,23 +506,24 @@ function preencheJogadores(){
 		for(j=0; j < tamanhoCromossomos; j++){
 			vetorMovimentos.push(Math.random() <= 0.5);
 		}
-		jogador = new Object();
-		jogador.identificador	= 	i+1;
-		jogador.movimentos      = 	vetorMovimentos;
-		jogador.pontuacao 		= 	0;
-		
+		jogador = {
+			identificador	: 	i+1,
+			movimentos		:	vetorMovimentos, 	
+			pontuacao 		: 	0
+		}
 		vetorJogadores.push(jogador);
-		vetorMovimentos  = [];
-	}
-	for(i = numeroJogadoresIniciais; i < numeroJogadoresIniciais + numeroJogadoresCrossover; i++){
-		jogador = new Object();
-		jogador.identificador 	= 	i+1;
-		jogador.movimentos		=  [];
-		jogador.pontuacao 		= 	0;
-		
-		vetorJogadores.push(jogador); 
 		vetorMovimentos = [];
 	}
+	for(i = numeroJogadoresIniciais; i < numeroJogadoresIniciais + numeroJogadoresCrossover; i++){
+		jogador =  {
+			identificador 	: 	i+1,
+			movimentos		:  [],
+			pontuacao 		: 	0
+		}
+		
+		vetorJogadores.push(jogador);
+		vetorMovimentos = [];
+	} 
 }
 
 
@@ -512,7 +548,6 @@ async function fazerMutacao(){
 	vetorJogadores[Math.floor(Math.random() * tamanhoCromossomos)]['movimentos'] = inverteValor(vetorJogadores[Math.floor(Math.random() * tamanhoCromossomos)]['movimentos']);
 }
 
-//Funcao para gerar número aleatorio
 function gerarAleatorio(max, min){
 	return Math.floor(Math.random() * (max -min + 1)) + min;
 }
@@ -536,12 +571,39 @@ async function ordenarPorPontuacao(){
 	}
 }
 
-//Funcao que determina a velocidade que o personagem irá se mover
+async function sleep_until (seconds) {
+   var max_sec = new Date().getTime();
+   while (new Date() < max_sec + seconds * 1000) {}
+   return true;
+}
+
+/* async function executarFila(fila, vezes, tempoEntre){
+	var i = 0;
+	k=0;
+	fila.forEach(function(funcao){
+		vetorJogadores[0].direita;
+		vetorJogadores[0].esquerda;
+		
+		for(k=0; k < vezes; k++){
+		//while(level!=levelLoad){
+			if(morreu){
+				morreu = false;
+				continue;
+			}
+			i++;
+			setTimeout(funcao,(i*tempoEntre));
+		}
+	});
+} */
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-//Muda o numero de identificacao de cada jogador para que fique em sequencia 
+function comparar(a, b){
+	return b['pontuacao'] - a['pontuacao'];
+}
+
 async function renomearJogadores(){
 	var i =0;
 	for(i =0; i < vetorJogadores.length; i++){
@@ -549,7 +611,15 @@ async function renomearJogadores(){
 	}
 }
 
-//Inverte um valor(Mutacao)
+function criarNovoArray(posicoes){
+	var vetor = [];
+	var i;
+	for(i = 0; i< posicoes; i++){
+		vetor.push(Math.random()<0.5);
+	}
+	return vetor;
+}
+
 function inverteValor(valorBinario){
 	return !valorBinario;
 }
